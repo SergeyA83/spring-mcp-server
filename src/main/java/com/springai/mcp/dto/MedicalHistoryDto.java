@@ -4,7 +4,8 @@ import com.springai.mcp.domain.VisitType;
 
 import java.time.LocalDate;
 
-public record MedicalHistoryDto(LocalDate visitDate,
+public record MedicalHistoryDto(Long patientId,
+                                LocalDate visitDate,
                                 String diagnosis,
                                 String treatment,
                                 String notes,

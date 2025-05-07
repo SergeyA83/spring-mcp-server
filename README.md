@@ -1,4 +1,4 @@
-# Read Me First
+# Spring MCP Server Example
 
 ./gradlew clean build
 
