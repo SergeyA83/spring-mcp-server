@@ -1,8 +1,18 @@
 # Spring MCP Server Example
 
+### Build from Source
+
+```bash
+#Building the application from the root directory of the project
+
 ./gradlew clean build
 
-docker build --tag=hadiy83/spring-mcp:latest .
+#Building the Docker image
 
-docker run -p 8080:8080 hadiy83/spring-mcp:latest
+docker build --tag=spring-mcp-server:latest .
+
+#Running in Docker
+
+docker run -p 8080:8080 spring-mcp-server:latest
+```
 

@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface MedicalHistoryRepository extends JpaRepository<MedicalHistory, Long> {
     List<MedicalHistory> findByPatientId(Long patientId);
-
     List<MedicalHistory> findByPatientIdAndVisitDateBetween(Long patientId, LocalDate startDate, LocalDate endDate);
-
     Optional<MedicalHistory> findByPatientIdAndVisitDate(Long patientId, LocalDate visitDate);
 }

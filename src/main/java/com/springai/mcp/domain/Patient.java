@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -13,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "date_of_birth"}))
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -22,14 +22,14 @@ public class MedicalHistoryService {
     private final MedicalHistoryMapper medicalHistoryMapper;
 
     @Tool(name = "Get_Patient_full_Medical_History_by_Patient_ID",
-                description = "Get Patient full Medical History by real Patient ID")
+            description = "Get Patient full Medical History by real Patient ID")
     public List<MedicalHistory> findByPatientId(Long patientId) {
         log.info("Getting Medical History by Patient Id: {}", patientId);
         return medicalHistoryRepository.findByPatientId(patientId);
     }
 
     @Tool(name = "Get_Patient_Medical_History_by_Patient_ID_and_Date_Range",
-       description = "Get Patient Medical History Patient ID and Date Range")
+            description = "Get Patient Medical History Patient ID and Date Range")
     public List<MedicalHistory> findByPatientIdAndVisitDateBetween(Long patientId,
                                                                    LocalDate startDate,
                                                                    LocalDate endDate) {
@@ -46,26 +46,41 @@ public class MedicalHistoryService {
                         medicalHistoryDto.visitDate());
 
         if (medicalHistoryExistingOptional.isPresent()) {
-            throw new IllegalStateException("Medical History already exists for the same Patient and Date.");
+            throw new IllegalStateException("Medical History already exists for the same Patient and Date");
         }
 
         var patient = patientRepository.findById(medicalHistoryDto.patientId())
-                .orElseThrow(() -> new IllegalStateException("Patient not found."));
+                .orElseThrow(() -> new IllegalStateException("Patient not found"));
 
         var medicalHistory = medicalHistoryMapper.toMedicalHistory(medicalHistoryDto);
         medicalHistory.setPatient(patient);
 
+        log.info("Adding new Medical History {}", medicalHistoryDto);
         return medicalHistoryRepository.save(medicalHistory);
     }
 
-    @Tool(name = "Changing_Patient_existing_Medical_History_by_Patient_ID",
-            description = "Changing Patient existing Medical History record by real Patient ID")
+    @Tool(name = "Changing_existing_Patient_Medical_History",
+            description = "Changing existing Patient Medical History record by real Patient ID and Visit Date")
     public MedicalHistory update(MedicalHistoryDto medicalHistoryDto) {
+        log.info("Updating Medical History {}", medicalHistoryDto);
+
         // Retrieve the existing medical history for the specified patient and visit date
         return medicalHistoryRepository.findByPatientIdAndVisitDate(medicalHistoryDto.patientId(),
                         medicalHistoryDto.visitDate())
-                .map(existingHistory ->
-                        medicalHistoryRepository.save(medicalHistoryMapper.toMedicalHistory(medicalHistoryDto)))
-                .orElseThrow(() -> new IllegalStateException("Medical History not found for Patient and given Date"));
+                .map(existingHistory -> {
+                    mergeMedicalHistory(medicalHistoryDto, existingHistory);
+                    return medicalHistoryRepository.save(existingHistory);
+                })
+                .orElseThrow(() ->
+                        new IllegalStateException("Medical History not found for the given Patient and Visit Date"));
+    }
+
+    private void mergeMedicalHistory(MedicalHistoryDto medicalHistoryDto, MedicalHistory existingHistory) {
+        existingHistory.setDiagnosis(medicalHistoryDto.diagnosis());
+        existingHistory.setTreatment(medicalHistoryDto.treatment());
+        existingHistory.setNotes(medicalHistoryDto.notes());
+        existingHistory.setPrescribedMedications(medicalHistoryDto.prescribedMedications());
+        existingHistory.setDoctorName(medicalHistoryDto.doctorName());
+        existingHistory.setVisitType(medicalHistoryDto.visitType());
     }
 }

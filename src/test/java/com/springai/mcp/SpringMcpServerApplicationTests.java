@@ -1,13 +1,11 @@
-package com.springai.spring_mcp_server;
+package com.springai.mcp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class SpringMcpServerApplicationTests {
-
-	//@Test
+	@Test
 	void contextLoads() {
 	}
-
 }

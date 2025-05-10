@@ -18,10 +18,6 @@ public class MedicalHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private Patient patient;
-
     private LocalDate visitDate;
 
     private String diagnosis;
@@ -36,6 +32,10 @@ public class MedicalHistory {
 
     @Enumerated(EnumType.STRING)
     private VisitType visitType;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     @Version
     private Long version; // This field is used for optimistic locking
